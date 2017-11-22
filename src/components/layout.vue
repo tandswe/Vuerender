@@ -57,7 +57,7 @@
                 <el-row>
                     <el-col :span="24">
                         <!-- 3.0 其他功能的渲染区占位符 -->
-                        其他功能的渲染区占位符
+                        
                         <router-view></router-view>
 
                     </el-col>

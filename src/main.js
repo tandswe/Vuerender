@@ -48,6 +48,10 @@ import '../static/css/site.css';
 // 绑定到vue中
 Vue.use(elementUI);
 
+// 这里要优化你的ajax代码
+import axios from 'axios';
+axios.defaults.baseURL = 'http://127.0.0.1:8899';
+Vue.prototype.$ajax=axios;
 // 3.0 实例化vue对象
 new Vue({
     el:'#app',
