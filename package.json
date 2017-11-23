@@ -14,6 +14,7 @@
     "chokidar": "^1.7.0",
     "element-ui": "^1.4.10",
     "vue": "^2.5.2",
+    "vue-quill-editor": "^2.3.3",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

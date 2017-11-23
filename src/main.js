@@ -19,6 +19,7 @@ import login from './components/account/login.vue';
 
 // 商品相关的组件
 import goodslist from './components/goods/goodslist.vue';
+import goodsadd from './components/goods/goodsadd.vue';
 
 // 3.0.2 实例化对象并且定义路由规则
 var router = new VueRouter({
@@ -26,12 +27,13 @@ var router = new VueRouter({
         // 默认跳转的路由规则
         {name:'default',path:'/',redirect:'/admin'},
         // 登录
-        {name:'login',path:'/login',component:login},
+        {name:'login',path:'/login',component:login,meta:{nologin:true}},
         // 布局
         {name:'layout',path:'/admin',component:layout,
         children:[
             // 商品列表
-            {name:'goodslist',path:'goodslist',component:goodslist}
+            {name:'goodslist',path:'goodslist',component:goodslist},
+            {name:'goodsadd',path:'goodsadd',component:goodsadd}
         ]
     }
     ]
@@ -39,6 +41,7 @@ var router = new VueRouter({
 
 // 4.0 导入vue的一个组件库:element-ui
 import elementUI from 'element-ui';
+
 // 导入默认样式(由于咱们自己修改了样式所以要替换默认样式)
 import '../static/them_rms/index.css';
 
@@ -48,10 +51,38 @@ import '../static/css/site.css';
 // 绑定到vue中
 Vue.use(elementUI);
 
-// 这里要优化你的ajax代码
+// 4这里要优化你的ajax代码
 import axios from 'axios';
 axios.defaults.baseURL = 'http://127.0.0.1:8899';
 Vue.prototype.$ajax=axios;
+// 5.0.2 配置axios在请求数据服务接口的时候，允许带cookie(凭证)
+axios.defaults.withCredentials = true;
+// 6 在vue-router对象上添加一个全局守卫，在任何组件渲染出来之前都需要先执行这个守卫函数
+router.beforeEach((to,from,next)=>{
+    // console.log(to);
+    // console.log(from);
+    
+     // 判断如果进入的是登录页面，由于登录的路由规则上有一个  meta:{nologin:true} 而其他规则上没有
+    // 所以可以判断 to.meta.nologin 的值如果是为true则跳过登录检查，否则进入登录检查
+    if(to.meta.nologin){
+        next();
+
+        // 阻断下面代码的继续运行
+        return;
+    }
+
+    // 进入任何组件都会触发这个请求，进行登录判断
+    axios.get('/admin/account/islogin').then(res=>{       
+        if(res.data.code =='nologin'){
+            // 表示没有登录，则跳转到登录页面
+            router.push({name:'login'});
+        }else{
+            // 登录成功
+             // 调用next()继续渲染组件
+            next();
+        }
+    });
+})
 // 3.0 实例化vue对象
 new Vue({
     el:'#app',
