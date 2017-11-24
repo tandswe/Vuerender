@@ -20,6 +20,8 @@ import login from './components/account/login.vue';
 // 商品相关的组件
 import goodslist from './components/goods/goodslist.vue';
 import goodsadd from './components/goods/goodsadd.vue';
+import goodsedit from './components/goods/goodsedit.vue';
+
 
 // 3.0.2 实例化对象并且定义路由规则
 var router = new VueRouter({
@@ -32,8 +34,9 @@ var router = new VueRouter({
         {name:'layout',path:'/admin',component:layout,
         children:[
             // 商品列表
-            {name:'goodslist',path:'goodslist',component:goodslist},
-            {name:'goodsadd',path:'goodsadd',component:goodsadd}
+            {name:'goodslist',path:'goodslist',component:goodslist,meta:{mno:'1-2'}},
+            {name:'goodsadd',path:'goodsadd',component:goodsadd,meta:{mno:'1-1'}},
+            {name:'goodsedit',path:'goodsedit/:goodsid',component:goodsedit,meta:{mno:'1-1'}}
         ]
     }
     ]
@@ -61,7 +64,10 @@ axios.defaults.withCredentials = true;
 router.beforeEach((to,from,next)=>{
     // console.log(to);
     // console.log(from);
-    
+    // 这里是给点击管理的时候一定的优化
+    if(to.meta.mno){
+        localStorage.setItem('currentMID',to.meta.mno)
+    }
      // 判断如果进入的是登录页面，由于登录的路由规则上有一个  meta:{nologin:true} 而其他规则上没有
     // 所以可以判断 to.meta.nologin 的值如果是为true则跳过登录检查，否则进入登录检查
     if(to.meta.nologin){

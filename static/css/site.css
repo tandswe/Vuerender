@@ -141,3 +141,33 @@ text-decoration: none;
 .el-upload-list.el-upload-list--picture{
    margin-right: 10px;
 }
+.unlinght {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.goodstip {
+    padding: 3px;
+}
+
+.abread {
+    padding: 10px;
+}
+
+.ls.el-icon-picture,
+.ls.el-icon-upload,
+.ls.el-icon-star-on {
+    opacity: 0.5;
+    font-size: 18px;
+}
+
+.ls.el-icon-picture.imgactive,
+.ls.el-icon-upload.imgactive,
+.ls.el-icon-star-on.imgactive {
+    opacity: 1;
+    font-size: 18px;
+}
+
+.listedit {
+    color: #2a72c5;
+    font-size: 12px;
+}

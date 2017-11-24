@@ -19,12 +19,12 @@
                     <el-row>
                         <el-col :span="6">
                             <!--按钮和搜索框  -->
-                            <el-button size="small">全选</el-button>
+                            <el-button size="small" @click="selectAll(list)">全选</el-button>
                             <router-link to="/admin/goodsadd">
                                 <el-button size="small" >新增</el-button>
                             </router-link>
                             
-                            <el-button size="small">删除</el-button>
+                            <el-button size="small" @click="Delete">删除</el-button>
                         </el-col>
 
                         <el-col :offset="12" :span="6">
@@ -40,7 +40,7 @@
         <el-row>
             <el-col :span="24">
                 <div>
-                    <el-table ref="multipleTable" :data="list" border tooltip-effect="dark" style="width: 100%">
+                    <el-table ref="multipleTable"@select-all="selectAll" @select="selectDel":data="list" border tooltip-effect="dark" style="width: 100%">
                         <!-- type="selection":这一列是一个checkbox勾选框 -->
                         <el-table-column type="selection" width="55">
                         </el-table-column>
@@ -50,7 +50,8 @@
                                         <div slot="content">
                                                 <img :src="scope.row.imgurl" width="100" height="100"alt="">
                                             </div>
-                                        <a href="javascript:;">{{scope.row.title}}</a>
+                                            <router-link v-bind="{to:'/admin/goodsedit/'+ scope.row.id}">
+                                                {{scope.row.title}}</router-link>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
@@ -74,7 +75,9 @@
                         <!-- template：是属于当前列的模板，可以有程序员自己编写这一列的样式 -->
                         <el-table-column label="操作" width="120">
                             <template scope="scope">
-                                <a href="#">修改</a>
+                                <router-link  v-bind="{to:'/admin/goodsedit/'+ scope.row.id}">
+                                    修改
+                                </router-link>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -96,7 +99,7 @@
 </template>
 
 <script>
-    import axios from "axios";
+
     export default {
         data() {
             return {
@@ -105,10 +108,48 @@
                 totalcount: 0, //这是总的页数
                 searchValue: "",
                 list: [],
+                delids:[],
+                isSelectDel:false,
 
             };
         },
         methods: {
+            Delete(){
+                if(this.delids.lenth<=0){
+                    this.$message.error('请输入删除数据')
+                }
+                var ids = this.delids.join(',');
+                this.$ajax.get('/admin/goods/del/'+ids).then(res=>{
+                    if(res.data.status==1){
+                        this.$message.error(res.data.message)
+                    }
+                    this.getlist();
+                })
+            },
+            selectAll(selection){
+                 this.isSelectDel=!this.isSelectDel
+                 if(this.isSelectDel){
+                    //  每次进入把其他原来的id清空 在进行赋值
+                    this.delids.length=0;
+                    selection.forEach(selections=>{
+                        this.$refs.multipleTable.toggleRowSelection(selections);
+                        this.delids.push(selections.id)
+                    })
+                    console.log(this.delids);
+                 }else{
+                      // 遍历rows数组
+                      selection.forEach(selections => {
+                        // 反选
+                        this.$refs.multipleTable.toggleRowSelection(selections);                                              
+                    });
+                      // 清空
+                      this.delids = [];
+                 }
+            },
+            selectDel(selection,row){
+                console.log(row);
+                this.delids.push(row.id);
+            },
             getlist() {
                 this.list = [];
                 var url =
@@ -149,34 +190,5 @@
     };
 </script>
 <style scoped>
-    .unlinght {
-        color: rgba(0, 0, 0, 0.3);
-    }
-
-    .goodstip {
-        padding: 3px;
-    }
-
-    .abread {
-        padding: 10px;
-    }
-
-    .ls.el-icon-picture,
-    .ls.el-icon-upload,
-    .ls.el-icon-star-on {
-        opacity: 0.5;
-        font-size: 18px;
-    }
-
-    .ls.el-icon-picture.imgactive,
-    .ls.el-icon-upload.imgactive,
-    .ls.el-icon-star-on.imgactive {
-        opacity: 1;
-        font-size: 18px;
-    }
-
-    .listedit {
-        color: #2a72c5;
-        font-size: 12px;
-    }
+  
 </style>

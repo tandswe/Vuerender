@@ -6,7 +6,7 @@
                 <!-- 1.0 左边菜单 -->
                 <img src="../../static/imgs/logo.png" alt="">
                 <div class="layout menu">
-                    <el-menu default-active="1-2" class="el-menu-vertical-demo">
+                    <el-menu :default-active="currentMID" class="el-menu-vertical-demo">
                         <el-submenu index="1">
                             <template slot="title">
                                 <i class="el-icon-message"></i>购物商城</template>
@@ -79,9 +79,14 @@
     export default {
         data() {
             return {
+                currentMID:'1-1'
             }
         },
+        mounted(){
+            this.currentMID=localStorage.getItem('currentMID')
+        },
         methods: {
+          
         }
     }
 </script>

@@ -176,7 +176,7 @@
       },
       // 点击时跳转
       submitForm(formName) {
-        console.log( this.ruleForm);
+        // console.log( this.ruleForm);
         // 对整个表单进行校验的方法  如果是等于true  证明表单都是正确的
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -211,7 +211,7 @@
         this.$ajax.get(url).then(res => {
           // console.log(res);
           this.list = res.data.message
-          console.log(this.list);
+          
         })
 
       },
